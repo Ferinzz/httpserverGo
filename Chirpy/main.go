@@ -10,24 +10,27 @@ import (
 
 func main() {
 	const port = "8080"
+	const filepathRoot = "."
 
 	mux := http.NewServeMux()
+
+	handler := func(w http.ResponseWriter, req *http.Request) {
+		
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		
+		buf := "Ok"
+		w.Write([]byte(buf))
+	}
 
 	srv := &http.Server{
 		Addr:    ":" + port,
 		Handler: mux,
 	}
 
-	/*
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if req.URL.Path != "/" {
-			http.NotFound(w, req)
-			return
-		}
-	fmt.Fprintf(w, "Welcome to the home page!")
-	})*/
-
-	mux.Handle("/", http.FileServer(http.Dir(".")))
+	mux.Handle("/app/", http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot))))
+	mux.Handle("/assets/logo.png", http.FileServer(http.Dir(".")))
+	mux.HandleFunc("/healthz", handler)
 
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
