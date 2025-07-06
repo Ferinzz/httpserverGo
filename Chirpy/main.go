@@ -122,5 +122,38 @@ func ValidateJSON(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	log.Printf("%v",len(params.Body))
+	if len(params.Body) > 140 {
+		
+		myError:= jsonError{
+			Error: "Chirp too long",
+		}
+		log.Printf("Chirp is too long")
+		w.Header().Add("Content-type", "text/json")
+		w.WriteHeader(400)
+		dat, err:= json.Marshal(myError)
+		if err != nil {
+			log.Printf("Failed to marhsal error message")
+			return
+		}
+		w.Write(dat)
+		return
+	}
 
+	type success struct {
+		Valid bool `json:"valid"`
+	}
+	aSuccess:= success{
+		Valid: true,
+	}
+	log.Printf("No errors here")
+	w.Header().Add("Content-type", "text/json")
+	w.WriteHeader(200)
+	dat, err:= json.Marshal(aSuccess)
+	if err != nil {
+		log.Printf("Failed to marhsal success message")
+		return
+	}
+	w.Write(dat)
+	return
 }
