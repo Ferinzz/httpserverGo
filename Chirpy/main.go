@@ -178,7 +178,6 @@ func CheckforProfane(msg string) string {
     	"kerfuffle",
     	"sharbert",
     	"fornax",
-		"12358",
 	}
 
 	var loc []int
