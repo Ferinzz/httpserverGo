@@ -35,4 +35,4 @@ func handlerReadiness(w http.ResponseWriter, req *http.Request) {
 		
 		//buf := "Ok"
 		w.Write([]byte(http.StatusText(http.StatusOK)))
-	}
+}
