@@ -31,7 +31,7 @@ func main() {
 
 	mux.Handle("GET /app/", hits.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
 	mux.Handle("GET /assets/logo.png", http.FileServer(http.Dir(".")))
-	mux.HandleFunc("GET /api/healthz", handlerReadiness)
+	mux.HandleFunc("GET /admin/healthz", handlerReadiness)
 	mux.HandleFunc("POST /admin/reset", hits.reset)
 	mux.HandleFunc("GET /admin/metrics", hits.handlerAdminMetrics)
 
