@@ -14,14 +14,6 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	handler := func(w http.ResponseWriter, req *http.Request) {
-		
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
-		
-		buf := "Ok"
-		w.Write([]byte(buf))
-	}
 
 	srv := &http.Server{
 		Addr:    ":" + port,
@@ -30,8 +22,17 @@ func main() {
 
 	mux.Handle("/app/", http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot))))
 	mux.Handle("/assets/logo.png", http.FileServer(http.Dir(".")))
-	mux.HandleFunc("/healthz", handler)
+	mux.HandleFunc("/healthz", handlerReadiness)
 
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
 }
+
+func handlerReadiness(w http.ResponseWriter, req *http.Request) {
+		
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		
+		//buf := "Ok"
+		w.Write([]byte(http.StatusText(http.StatusOK)))
+	}
