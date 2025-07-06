@@ -29,11 +29,11 @@ func main() {
 		Handler: mux,
 	}
 
-	mux.Handle("/app/", hits.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
-	mux.Handle("/assets/logo.png", http.FileServer(http.Dir(".")))
-	mux.HandleFunc("/healthz", handlerReadiness)
-	mux.HandleFunc("/metrics", hits.handlerMetrics)
-	mux.HandleFunc("/reset", hits.reset)
+	mux.Handle("GET /app/", hits.middlewareMetricsInc(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot)))))
+	mux.Handle("GET /assets/logo.png", http.FileServer(http.Dir(".")))
+	mux.HandleFunc("GET /healthz", handlerReadiness)
+	mux.HandleFunc("GET /metrics", hits.handlerMetrics)
+	mux.HandleFunc("POST /reset", hits.reset)
 
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
