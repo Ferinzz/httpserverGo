@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"sync/atomic"
+	"encoding/json"
 )
 
 //type apiHandler struct{}
@@ -35,6 +36,8 @@ func main() {
 	mux.HandleFunc("POST /admin/reset", hits.reset)
 	mux.HandleFunc("GET /admin/metrics", hits.handlerAdminMetrics)
 
+	mux.HandleFunc("POST /api/validate_chirp", ValidateJSON)
+
 	log.Printf("Serving on port: %s\n", port)
 	log.Fatal(srv.ListenAndServe())
 }
@@ -44,7 +47,6 @@ func handlerReadiness(w http.ResponseWriter, req *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
 		
-		//buf := "Ok"
 		w.Write([]byte(http.StatusText(http.StatusOK)))
 }
 
@@ -89,4 +91,36 @@ func (cfg *apiConfig) handlerAdminMetrics(w http.ResponseWriter, req *http.Reque
 		</body>
 	</html>
 	`, cfg.fileserverHits.Load())))
+}
+
+func ValidateJSON(w http.ResponseWriter, req *http.Request) {
+	type parameter struct {
+		Body string `json:"body"`
+	}
+
+	type jsonError struct {
+		Error string `json:"error"`
+	}
+	
+	decoder:= json.NewDecoder(req.Body)
+	params:= parameter{}
+	err:= decoder.Decode(&params)
+
+	if err != nil {
+		myError:= jsonError{
+			Error: "Something went wrong",
+		}
+		log.Printf("Error decoding parameters: %s", err)
+		w.Header().Add("Content-type", "text/json")
+		w.WriteHeader(500)
+		dat, err:= json.Marshal(myError)
+		if err != nil {
+			log.Printf("Failed to marhsal error message")
+			return
+		}
+		w.Write(dat)
+		return
+	}
+
+
 }
