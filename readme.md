@@ -16,5 +16,6 @@ Authentication
 Breaking it down like this makes it easier to see where the different points of 'task completed' are for another lower level implementation.
 
 Quick glance at Odin's net package and bindings to OS seems like a net package is a wrapper on the OS's network APIs.
-https://github.com/odin-lang/Odin/blob/master/core/sys/windows/ws2_32.odin#L199
-https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen
+net socket code: https://github.com/odin-lang/Odin/blob/86d576f7cc1ceeb7472c18e08e3c74214f26ddc6/core/net/socket_windows.odin#L173
+windows package: https://github.com/odin-lang/Odin/blob/master/core/sys/windows/ws2_32.odin#L199
+windows api: https://learn.microsoft.com/en-us/windows/win32/api/winsock2/nf-winsock2-listen
