@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"time"
+	"net/http"
 )
 
 func handleRequests(reqs <-chan request) {
